@@ -787,6 +787,7 @@ function ridged(x, y, o) { let s = 0, a = 0.5, f = 1, n = 0, w = 1; for (let i =
 //  Les 10 univers : un tous les 1 000 m, fin du jeu à 10 000 m
 // =====================================================================
 const GOAL = 10000;
+const HIM_DRAG = 2.6, MOON_DRAG = 2.2;
 const WORLDS = [
   { id: 'arctique', name: 'Banquise arctique', mult: 1, terrain: 'arctic', tree: 'pine', treeN: 110, grav: 1, drag: 1,
     ground: [0xF5F8FC, 0xDCE6F2, 0x505A70], lane: 0xF2F6FB, weather: 'snow', flyer: 'gull',
@@ -828,12 +829,12 @@ const WORLDS = [
     obs: [['panda', .4], ['firework', .35], ['lantern', .25]],
     sky: { zen: 0x6F8FA8, mid: 0xB8CCC8, hor: 0xE8E4D0, glow: 0xF8D8A8, sunC: 0xFFF4DC, dark: 0, aurora: 0, stars: 0, cloud: 0.7, sun: [0.25, 0.1, -1] },
     light: { fog: 0xDDE3D6, dens: 0.0038, sun: 0xFFE8C8, sunI: 1.9, hs: 0xC8DCD8, hg: 0xD8E0C8, hi: 1.5, fill: 0.7, exp: 0.92 } },
-  { id: 'himalaya', name: 'Himalaya', mult: 3, terrain: 'himalaya', tree: 'pine', treeN: 25, grav: 1, drag: 1.5,
+  { id: 'himalaya', name: 'Himalaya', mult: 3, terrain: 'himalaya', tree: 'pine', treeN: 25, grav: 1, drag: HIM_DRAG,
     ground: [0xF2F5FA, 0xC9D3E3, 0x3E4556], lane: 0xE6ECF4, weather: 'blizzard', flyer: 'kite',
     obs: [['avalanche', .3], ['crevasse', .2], ['drift', .3], ['spring', .2]],
     sky: { zen: 0x5A6478, mid: 0x8E98A8, hor: 0xC8CED8, glow: 0xD8DCE8, sunC: 0xF0F4FF, dark: 0.25, aurora: 0, stars: 0, cloud: 1, sun: [0, 0.3, -1] },
     light: { fog: 0xBFC6D2, dens: 0.0042, sun: 0xE8EEFF, sunI: 1.5, hs: 0xB8C4D8, hg: 0xD8DEE8, hi: 1.6, fill: 0.7, exp: 0.92 } },
-  { id: 'lune', name: 'La Lune', mult: 3.5, terrain: 'moon', tree: 'none', treeN: 0, grav: 0.45, drag: 0.3,
+  { id: 'lune', name: 'La Lune', mult: 3.5, terrain: 'moon', tree: 'none', treeN: 0, grav: 0.45, drag: MOON_DRAG,
     ground: [0xA7A7AE, 0x8B8B93, 0x6E6E76], lane: 0xB4B4BA, weather: 'none', flyer: 'asteroid',
     obs: [['crater', .6], ['moonrock', .4]],
     sky: { zen: 0x000000, mid: 0x02040A, hor: 0x0A0E18, glow: 0x1A2438, sunC: 0xFFFFFF, dark: 1, aurora: 0, stars: 1, cloud: 0, sun: [0.5, 0.3, -1] },
