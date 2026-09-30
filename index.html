@@ -597,6 +597,7 @@ const P = () => {
     prime: 0,
   };
 };
+let AERO_K = 10;
 function P2() {
   // pingouin choisi et cristaux de prestige
   const o = P(), k = save.peng, c = save.pr.crystals;
@@ -610,6 +611,9 @@ function P2() {
   if (bt === 'espadon') o.fishMul *= 1.15;
   if (bt === 'or') o.perfect += 6;
   o.stars = bt === 'meteo';
+  // fin de partie : plus on a investi (compétences + batte), moins l'air freine à très grande vitesse
+  const invest = (L('precision') + L('ailes') + L('glisse') + L('ressorts')) / 40 * 0.7 + (BAT[bt] || BATS[0]).pow / 0.6 * 0.3;
+  o.aero = 1 + 0.06 * c + AERO_K * invest * invest;
   o.speedMul *= 1 + 0.06 * c; o.fishMul *= 1 + 0.1 * c;
   return o;
 }
@@ -722,7 +726,7 @@ function renderDaily() {
 function renderPrestige() {
   const g = crystalGain(), c = save.pr.crystals;
   $('prestPane').innerHTML = `<h3>Nouvelle ère glaciaire</h3>
-    <p>Recommence à zéro (poissons, compétences et battes) en échange de cristaux de glace. Chaque cristal donne pour toujours +6 % de vitesse de frappe, +10 % de poissons et un pingouin plus aérodynamique. Il faut en général trois ères pour atteindre la Lune. Tu gardes tes quêtes, tes pouvoirs, tes tenues et ton record.</p>
+    <p>Recommence à zéro (poissons, compétences et battes) en échange de cristaux de glace. Chaque cristal donne pour toujours +6 % de vitesse de frappe, +10 % de poissons et un pingouin plus aérodynamique. Avec toutes les compétences et la meilleure batte, la Lune est à portée ; les cristaux rendent chaque nouvelle ère plus rapide. Tu gardes tes quêtes, tes pouvoirs, tes tenues et ton record.</p>
     <div class="stat"><div><span>Cristaux</span><b>${c}</b></div><div><span>Bonus actuel</span><b>+${Math.round(c * 6)} % / +${c * 10} %</b></div><div><span>Meilleur de l’ère</span><b>${fmt(save.pr.runBest)} m</b></div><div><span>Ères passées</span><b>${save.pr.count}</b></div></div>
     <p>${g ? `Un prestige maintenant rapporterait <b class="big2">${g}</b> ${g > 1 ? 'cristaux' : 'cristal'}.` : 'Atteins 400 m dans cette ère pour gagner tes premiers cristaux.'}</p>
     <button class="act" id="prestBtn" type="button" ${g ? '' : 'disabled'}>Déclencher l’ère glaciaire</button>`;
@@ -3070,7 +3074,7 @@ const decayB = () => Math.pow(0.86, bounces++);
 function physics(h) {
   if (!p.sliding) {
     const W = worldAt(p.x), gW = prm.grav * W.grav;
-    p.vy -= gW * h; p.vx *= (1 - (prm.drag + DRAG2 / (1 + 0.06 * save.pr.crystals) * Math.max(0, p.vx - 20)) * W.drag * (gliding ? 0.5 : 1) * h);
+    p.vy -= gW * h; p.vx *= (1 - (prm.drag + DRAG2 / prm.aero * Math.max(0, p.vx - 20)) * W.drag * (gliding ? 0.5 : 1) * h);
     if (gliding) {
       if (p.vy < 0) {
         // les ailes portent : la gravité est en grande partie compensée, la chute est freinée
