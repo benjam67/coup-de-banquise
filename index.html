@@ -377,7 +377,7 @@
 <div id="glide" hidden><span>Vol plané</span><div class="gbar"><div class="gfill" id="gFill"></div></div></div>
 <div id="flaps"></div>
 <div id="combo" hidden></div>
-<details id="quests"><summary><span>Quêtes</span><span id="qCount">0/4</span></summary><ul id="qList"></ul></details>
+<details id="quests"><summary><span id="qHead">Quêtes</span><span id="qCount">0/4</span></summary><ul id="qList"></ul></details>
 <div id="qtoast"><b id="qtTitle">Quête accomplie</b><span id="qtText"></span></div>
 <div id="shout"></div>
 <div id="timing"><span>Tôt</span><div class="bar"><div class="sweet" id="tSweet"></div><div class="mark" id="tMark"></div></div><span>Tard</span></div>
@@ -514,13 +514,28 @@ window.claude?.hot?.snapshot?.(() => ({ save }));
 const persist = () => { try { localStorage.setItem('banquise-save', JSON.stringify(save)); } catch (e) {} };
 
 save.q = Object.assign({ gulls: 0, perfRico: 0, maxRico: 0, maxCombo: 0, done: {} }, save.q || {});
+// trois niveaux de quêtes : le niveau suivant s'ouvre quand les 4 quêtes du niveau en cours sont faites.
+// chaque niveau renforce les 4 mêmes pouvoirs.
+const ROMAN = ['', 'I', 'II', 'III'];
 const QUESTS = [
-  { id: 'galet', title: 'Fais 3 ricochets dans un même lancer', goal: 3, prog: () => save.q.maxRico, power: 'Ventre de galet', desc: 'Le premier ricochet de chaque lancer est automatique.' },
-  { id: 'turbo', title: 'Réussis 5 ricochets parfaits', goal: 5, prog: () => save.q.perfRico, power: 'Ricochet turbo', desc: 'Un ricochet parfait donne +15 % de vitesse au lieu de +5 %.' },
-  { id: 'amis', title: 'Rebondis sur 5 mouettes', goal: 5, prog: () => save.q.gulls, power: 'Ami des mouettes', desc: 'Plus de mouettes, et elles volent près de ta trajectoire.' },
-  { id: 'plumes', title: 'Enchaîne 3 mouettes sans toucher le sol', goal: 3, prog: () => save.q.maxCombo, power: 'Plumes de mouette', desc: 'Chaque mouette recharge la moitié de la jauge de vol plané.' },
+  { id: 'galet', tier: 1, title: 'Fais 3 ricochets dans un même lancer', goal: 3, prog: () => save.q.maxRico, power: 'Ventre de galet', desc: 'Le premier ricochet de chaque lancer est automatique.' },
+  { id: 'turbo', tier: 1, title: 'Réussis 5 ricochets parfaits', goal: 5, prog: () => save.q.perfRico, power: 'Ricochet turbo', desc: 'Un ricochet parfait donne +15 % de vitesse au lieu de +5 %.' },
+  { id: 'amis', tier: 1, title: 'Rebondis sur 5 mouettes', goal: 5, prog: () => save.q.gulls, power: 'Ami des mouettes', desc: 'Plus de mouettes, et elles volent près de ta trajectoire.' },
+  { id: 'plumes', tier: 1, title: 'Enchaîne 3 mouettes sans toucher le sol', goal: 3, prog: () => save.q.maxCombo, power: 'Plumes de mouette', desc: 'Chaque mouette recharge la moitié de la jauge de vol plané.' },
+  { id: 'galet2', tier: 2, title: 'Fais 4 ricochets dans un même lancer', goal: 4, prog: () => save.q.maxRico, power: 'Ventre de galet II', desc: 'Les 2 premiers ricochets de chaque lancer sont automatiques.' },
+  { id: 'turbo2', tier: 2, title: 'Réussis 20 ricochets parfaits', goal: 20, prog: () => save.q.perfRico, power: 'Ricochet turbo II', desc: 'Un ricochet parfait donne +25 % de vitesse.' },
+  { id: 'amis2', tier: 2, title: 'Rebondis sur 25 mouettes', goal: 25, prog: () => save.q.gulls, power: 'Ami des mouettes II', desc: 'Encore plus de mouettes sur ta route.' },
+  { id: 'plumes2', tier: 2, title: 'Enchaîne 5 mouettes sans toucher le sol', goal: 5, prog: () => save.q.maxCombo, power: 'Plumes de mouette II', desc: 'Chaque mouette recharge les trois quarts de la jauge de vol plané.' },
+  { id: 'galet3', tier: 3, title: 'Fais 5 ricochets dans un même lancer', goal: 5, prog: () => save.q.maxRico, power: 'Ventre de galet III', desc: 'Les 3 premiers ricochets de chaque lancer sont automatiques.' },
+  { id: 'turbo3', tier: 3, title: 'Réussis 50 ricochets parfaits', goal: 50, prog: () => save.q.perfRico, power: 'Ricochet turbo III', desc: 'Un ricochet parfait donne +35 % de vitesse.' },
+  { id: 'amis3', tier: 3, title: 'Rebondis sur 60 mouettes', goal: 60, prog: () => save.q.gulls, power: 'Ami des mouettes III', desc: 'Des nuées de mouettes, et elles renvoient 20 % plus fort.' },
+  { id: 'plumes3', tier: 3, title: 'Enchaîne 7 mouettes sans toucher le sol', goal: 7, prog: () => save.q.maxCombo, power: 'Plumes de mouette III', desc: 'Chaque mouette remplit entièrement la jauge de vol plané.' },
 ];
-const hasPower = id => !!save.q.done[id];
+const QTIERS = 3;
+const questTier = () => { for (let t = 1; t <= QTIERS; t++) if (QUESTS.some(q => q.tier === t && !save.q.done[q.id])) return t; return QTIERS; };
+// niveau d'un pouvoir (0 à 3) : combien de quêtes de cette famille sont faites
+const powLv = id => (save.q.done[id] ? 1 : 0) + (save.q.done[id + '2'] ? 1 : 0) + (save.q.done[id + '3'] ? 1 : 0);
+const hasPower = id => powLv(id) > 0;
 // migration : l'ancien arbre (16 compétences) est remboursé intégralement
 let migratedRefund = 0;
 if ((save.v || 1) < 2) {
@@ -551,12 +566,20 @@ if (!save.peng) save.peng = 'echarpe';
 if (save.tuto === undefined) save.tuto = save.throws > 0 ? 3 : 0;
 const PENGS = [
   { id: 'echarpe', name: 'Écharpe', desc: 'L’écharpe rouge assortie à celle du yéti. Aucun effet, mais il n’a pas froid au cou.', ok: () => true, cond: 'Disponible' },
-  { id: 'snow', name: 'Snowboard et bonnet', desc: 'Tremplins +30 % et il traverse les congères sans freiner. En échange, il rebondit moins haut sur le sol.', ok: () => (save.q.maxRamps || 0) >= 3, cond: 'Prends 3 tremplins en un lancer', prog: () => `${Math.min(save.q.maxRamps || 0, 3)} / 3` },
-  { id: 'mouette', name: 'Déguisement de mouette', desc: 'Les oiseaux viennent plus souvent et le renvoient plus fort. En échange, phoques, igloos et trampolines le renvoient moins.', ok: () => save.q.maxCombo >= 5, cond: 'Enchaîne 5 oiseaux sans toucher le sol', prog: () => `${Math.min(save.q.maxCombo, 5)} / 5` },
-  { id: 'scaph', name: 'Scaphandre', desc: 'Gravité −10 %, idéal pour viser la Lune. En échange, il glisse 15 % moins bien.', ok: () => save.best >= 5000, cond: 'Atteins 5 000 m', prog: () => `${Math.round(Math.min(save.best, 5000)).toLocaleString('fr-FR')} / 5 000 m` },
-  { id: 'pyjama', name: 'Grenouillère de yéti', desc: 'Pyjama tout poilu avec des cornes. Aucun effet : c’est la tenue des champions.', ok: () => (save.won || 0) >= 1, cond: 'Termine le jeu (10 000 m)' },
+  { id: 'snow', name: 'Snowboard et bonnet', desc: 'Tremplins +30 % et il traverse les congères sans freiner. En échange, il rebondit moins haut sur le sol.', cnd: () => (save.q.maxRamps || 0) >= 3, cond: 'Prends 3 tremplins en un lancer', prog: () => `${Math.min(save.q.maxRamps || 0, 3)} / 3` },
+  { id: 'mouette', name: 'Déguisement de mouette', desc: 'Les oiseaux viennent plus souvent et le renvoient plus fort. En échange, phoques, igloos et trampolines le renvoient moins.', cnd: () => save.q.maxCombo >= 5, cond: 'Enchaîne 5 oiseaux sans toucher le sol', prog: () => `${Math.min(save.q.maxCombo, 5)} / 5` },
+  { id: 'scaph', name: 'Scaphandre', desc: 'Gravité −10 %, idéal pour viser la Lune. En échange, il glisse 15 % moins bien.', cnd: () => save.pr.runBest >= 5000, cond: 'Atteins 5 000 m', prog: () => `${Math.round(Math.min(save.pr.runBest, 5000)).toLocaleString('fr-FR')} / 5 000 m` },
+  { id: 'pyjama', name: 'Grenouillère de yéti', desc: 'Pyjama tout poilu avec des cornes. Aucun effet : c’est la tenue des champions.', cnd: () => save.pr.runBest >= 10000, cond: 'Termine le jeu (10 000 m)' },
 ];
-if (!PENGS.some(o => o.id === save.peng)) save.peng = 'echarpe';
+if (!Array.isArray(save.outfits)) save.outfits = ['echarpe', ...PENGS.filter(o => o.cnd && o.cnd()).map(o => o.id)];
+for (const o of PENGS) o.ok = () => o.id === 'echarpe' || save.outfits.includes(o.id);
+if (!PENGS.some(o => o.id === save.peng) || !PENGS.find(o => o.id === save.peng).ok()) save.peng = 'echarpe';
+function checkOutfits() {
+  for (const o of PENGS) if (o.cnd && !save.outfits.includes(o.id) && o.cnd()) {
+    save.outfits.push(o.id); persist(); outfitPics = null;
+    setTimeout(() => toast('Nouvelle tenue', `${o.name} : à enfiler dans l’atelier.`, 3200), 1800);
+  }
+}
 const crystalGain = () => save.pr.runBest >= 400 ? Math.floor(Math.pow(save.pr.runBest / 300, 1.4)) : 0;
 function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function ensureDaily() {
@@ -726,7 +749,7 @@ function renderDaily() {
 function renderPrestige() {
   const g = crystalGain(), c = save.pr.crystals;
   $('prestPane').innerHTML = `<h3>Nouvelle ère glaciaire</h3>
-    <p>Recommence à zéro (poissons, compétences et battes) en échange de cristaux de glace. Chaque cristal donne pour toujours +6 % de vitesse de frappe, +10 % de poissons et un pingouin plus aérodynamique. Avec toutes les compétences et la meilleure batte, la Lune est à portée ; les cristaux rendent chaque nouvelle ère plus rapide. Tu gardes tes quêtes, tes pouvoirs, tes tenues et ton record.</p>
+    <p>Recommence à zéro (poissons, compétences, battes, quêtes et tenues) en échange de cristaux de glace. Chaque cristal donne pour toujours +6 % de vitesse de frappe, +10 % de poissons et un pingouin plus aérodynamique. Avec toutes les compétences et la meilleure batte, la Lune est à portée ; les cristaux rendent chaque nouvelle ère plus rapide. Les quêtes, les pouvoirs et les tenues sont à regagner. Tu gardes tes cristaux et ton record.</p>
     <div class="stat"><div><span>Cristaux</span><b>${c}</b></div><div><span>Bonus actuel</span><b>+${Math.round(c * 6)} % / +${c * 10} %</b></div><div><span>Meilleur de l’ère</span><b>${fmt(save.pr.runBest)} m</b></div><div><span>Ères passées</span><b>${save.pr.count}</b></div></div>
     <p>${g ? `Un prestige maintenant rapporterait <b class="big2">${g}</b> ${g > 1 ? 'cristaux' : 'cristal'}.` : 'Atteins 400 m dans cette ère pour gagner tes premiers cristaux.'}</p>
     <button class="act" id="prestBtn" type="button" ${g ? '' : 'disabled'}>Déclencher l’ère glaciaire</button>`;
@@ -734,6 +757,7 @@ function renderPrestige() {
   b.addEventListener('click', () => {
     if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = `Confirmer : tout remettre à zéro pour ${g} ${g > 1 ? 'cristaux' : 'cristal'}`; return; }
     save.pr.crystals += g; save.pr.count++; save.pr.runBest = 0; save.fish = 0; save.lv = {};
+    save.q = { gulls: 0, perfRico: 0, maxRico: 0, maxCombo: 0, maxRamps: 0, done: {} }; save.outfits = ['echarpe']; save.peng = 'echarpe'; outfitPics = null; applyPenguin(); renderQuests();
     save.bats = ['branche']; save.bat = 'branche'; persist(); prm = P2(); applyVisuals(); reset(); updateHud(); renderPrestige();
     toast('Ère glaciaire', `+${g} ${g > 1 ? 'cristaux' : 'cristal'} de glace. Tout repart, en plus fort.`); sfx.fanfare();
   });
@@ -757,7 +781,7 @@ $('tree').addEventListener('pointerdown', e => { if (e.target === $('tree')) clo
 $('wipe').addEventListener('click', () => {
   const w = $('wipe');
   if (!w.classList.contains('armed')) { w.classList.add('armed'); w.textContent = 'Sûr ? Tout effacer'; return; }
-  save = { v: 3, fish: 0, lv: {}, bats: ['branche'], bat: 'branche', best: 0, throws: 0, q: { gulls: 0, perfRico: 0, maxRico: 0, maxCombo: 0, done: {} }, pr: { crystals: 0, count: 0, runBest: 0 }, peng: 'echarpe', tuto: 0 }; ensureDaily(); persist(); prm = P2(); renderQuests(); applyPenguin(); setGhost(); dailyMode = false;
+  save = { v: 3, fish: 0, lv: {}, bats: ['branche'], bat: 'branche', best: 0, throws: 0, q: { gulls: 0, perfRico: 0, maxRico: 0, maxCombo: 0, done: {} }, pr: { crystals: 0, count: 0, runBest: 0 }, peng: 'echarpe', outfits: ['echarpe'], tuto: 0 }; ensureDaily(); persist(); prm = P2(); renderQuests(); applyPenguin(); setGhost(); dailyMode = false;
   w.classList.remove('armed'); w.textContent = 'Tout recommencer';
   $('last').textContent = '—'; applyVisuals(); reset(); showPane('skills'); updateHud();
 });
@@ -2265,13 +2289,14 @@ function placeGull(g, x) {
   g.vx = -1.5 + grng() * 4; g.baseY = g.y;
   gullFront = Math.max(gullFront, x);
 }
-function nextGullGap() { return (hasPower('amis') ? 18 + grng() * 20 : 34 + grng() * 46) * (prm.gullGap || 1); }
+function nextGullGap() { const a = powLv('amis'); return (a ? 18 + grng() * 20 : 34 + grng() * 46) * [1, 1, 0.72, 0.55][a] * (prm.gullGap || 1); }
 function resetGulls() { gullFront = 25; for (const g of gulls) placeGull(g, gullFront + nextGullGap()); }
 function hitGull(g) {
   g.hit = true; g.hitT = 0; g.vy = 7; ricoArmed = false; ricoFail = false;
-  p.vy = Math.max(p.vy, 0) * 0.3 + 10 * prm.gullMul; p.vx += 2 * prm.gullMul; p.sliding = false; p.spin = -Math.min(p.vx, 50) * 0.5;
+  const gm = prm.gullMul * (powLv('amis') >= 3 ? 1.2 : 1);
+  p.vy = Math.max(p.vy, 0) * 0.3 + 10 * gm; p.vx += 2 * gm; p.sliding = false; p.spin = -Math.min(p.vx, 50) * 0.5;
   gullCombo++; gullsThrow++; if (ST) { ST.fly[g.kind] = (ST.fly[g.kind] || 0) + 1; ST.combo = Math.max(ST.combo, gullCombo); } save.q.gulls++; save.q.maxCombo = Math.max(save.q.maxCombo, gullCombo);
-  if (hasPower('plumes')) glideLeft = Math.min(prm.glideMax, glideLeft + prm.glideMax * 0.5);
+  if (hasPower('plumes')) glideLeft = Math.min(prm.glideMax, glideLeft + prm.glideMax * [0, 0.5, 0.75, 1][powLv('plumes')]);
   checkQuests();
   $('combo').hidden = false; $('combo').textContent = `Combo volant ×${gullCombo} · poissons +${Math.round((0.1 * gullsThrow + 0.05 * ricoCount) * 100)} %`;
   shout(gullCombo > 1 ? `Combo ×${gullCombo} !` : FLYER_NAME[g.kind] + ' !', gullCombo > 2 ? 'gold' : '');
@@ -2627,9 +2652,11 @@ function updateHud() {
 }
 let qToastTimer;
 function renderQuests() {
-  const done = QUESTS.filter(q => save.q.done[q.id]).length;
-  $('qCount').textContent = `${done}/${QUESTS.length}`;
-  $('qList').innerHTML = QUESTS.map(q => {
+  const t = questTier(), cur = QUESTS.filter(q => q.tier === t), done = cur.filter(q => save.q.done[q.id]).length;
+  const all = done === cur.length && t === QTIERS;
+  $('qHead').textContent = `Quêtes · niv. ${ROMAN[t]}`;
+  $('qCount').textContent = all ? 'toutes !' : `${done}/${cur.length}`;
+  $('qList').innerHTML = cur.map(q => {
     const d = !!save.q.done[q.id], v = Math.min(q.prog(), q.goal);
     return `<li class="${d ? 'done' : ''}"><span class="qt">${d ? 'Pouvoir : ' + q.power : q.title}</span><span class="qn">${d ? 'actif' : v + '/' + q.goal}</span>
       <span class="qb"><i style="width:${(v / q.goal) * 100}%"></i></span>${d ? `<span class="qp">${q.desc}</span>` : ''}</li>`;
@@ -2645,7 +2672,12 @@ function checkQuests() {
       sfx.chime(880);
     }
   }
+  const t = questTier();
+  if (changed && t > (save.q.tierSeen || 1) && QUESTS.some(q => q.tier === t && !save.q.done[q.id])) {
+    save.q.tierSeen = t; setTimeout(() => toast(`Quêtes niveau ${ROMAN[t]}`, 'Quatre nouvelles quêtes pour renforcer tes pouvoirs.', 3200), 3400);
+  }
   if (changed) persist();
+  checkOutfits();
   renderQuests();
 }
 $('quests').addEventListener('pointerdown', e => e.stopPropagation());
@@ -2991,7 +3023,7 @@ function finish(missed) {
     setGhost();
     sfx.fanfare();
   }
-  save.pr.runBest = Math.max(save.pr.runBest, d);
+  save.pr.runBest = Math.max(save.pr.runBest, d); checkOutfits();
   if (dailyMode) {
     save.daily.best = Math.max(save.daily.best, d);
     if (!save.daily.done && d >= save.daily.target) { save.daily.done = true; dailyWin = true; gain *= 3; setTimeout(() => toast('Défi du jour réussi', 'Poissons de ce lancer ×3.'), 900); }
@@ -3012,7 +3044,7 @@ function ricoLift() { return 7.5 * Math.pow(0.8, ricoCount) * (onIce ? 1.15 : 1)
 function ricochet(auto) {
   const perfect = !auto && ricoQ > 0.7;
   p.vy = Math.min(Math.max(-p.vy * 0.8, ricoLift()), ricoLift() * 1.6);
-  p.vx *= (perfect ? (hasPower('turbo') ? 1.15 : 1.05) : 0.98) * (onIce ? 1.04 : 1);
+  p.vx *= (perfect ? [1.05, 1.15, 1.25, 1.35][powLv('turbo')] : 0.98) * (onIce ? 1.04 : 1);
   ricoCount++; if (ST) { ST.rOk++; if (auto) ST.rTry++; if (perfect) ST.rPerf++; } ricoArmed = false; ricoFail = false;
   if (gullCombo) { gullCombo = 0; $('combo').hidden = true; }
   save.q.maxRico = Math.max(save.q.maxRico, ricoCount);
@@ -3100,7 +3132,7 @@ function physics(h) {
         if (t > 0.94) {
           o.used = true; p.sliding = false;
           const v = p.vx; p.vy = Math.max(11.5, v * 0.62) * prm.rampMul; p.vx = Math.max(v * 0.9, 8) * (1 + (prm.rampMul - 1) * 0.3);
-          rampsThrow++; save.q.maxRamps = Math.max(save.q.maxRamps || 0, rampsThrow); p.spin = -Math.min(p.vx, 50);
+          rampsThrow++; save.q.maxRamps = Math.max(save.q.maxRamps || 0, rampsThrow); checkOutfits(); p.spin = -Math.min(p.vx, 50);
           glideLeft = Math.min(prm.glideMax, glideLeft + prm.glideMax * 0.3); ricoArmed = false; ricoFail = false;
           if (ST) obsStat('tramp', 'Tremplin');
           pScale.set(0.8, 1.3, 0.8); shake = Math.max(shake, 0.3); shockRing(p.x, p.y, PZ, 0xFFC83D);
@@ -3157,7 +3189,7 @@ function physics(h) {
   }
   if (p.y <= P_R) {
     p.y = P_R;
-    const auto = hasPower('galet') && ricoCount === 0;
+    const auto = ricoCount < powLv('galet');
     if (!p.sliding && (ricoArmed || auto) && !ricoFail && ricoLift() > 2.5) { ricochet(auto); return false; }
     if (ricoArmed && !p.sliding) shout('Plus d’élan pour ricocher', 'meh');
     ricoArmed = false; ricoFail = false;
