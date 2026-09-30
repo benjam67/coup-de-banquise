@@ -580,7 +580,16 @@ function checkOutfits() {
     setTimeout(() => toast('Nouvelle tenue', `${o.name} : à enfiler dans l’atelier.`, 3200), 1800);
   }
 }
-const crystalGain = () => save.pr.runBest >= 400 ? Math.floor(Math.pow(save.pr.runBest / 300, 1.4)) : 0;
+// cristaux : 1 par tranche de 1 000 m atteinte dans l'ère (minimum 1 dès 500 m)
+const crystalGain = () => save.pr.runBest >= 10000 ? 12 : save.pr.runBest >= 1000 ? Math.floor(save.pr.runBest / 1000) : save.pr.runBest >= 500 ? 1 : 0;
+// effet des cristaux : léger et plafonné (au plus +20 % de frappe, atteint lentement)
+const crystalF = c => 1 - Math.exp(-c / 15);
+if ((save.v || 3) < 4) {
+  // ancienne formule beaucoup trop généreuse : on reconvertit les cristaux
+  const old = save.pr.crystals || 0;
+  if (old > 0) save.pr.crystals = Math.max(1, Math.floor(Math.pow(old, 1 / 1.4) * 300 / 1000));
+  save.v = 4; try { localStorage.setItem('banquise-save', JSON.stringify(save)); } catch (e) {}
+}
 function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function ensureDaily() {
   if (!save.daily || save.daily.date !== todayStr()) save.daily = { date: todayStr(), best: 0, done: false, target: Math.max(150, Math.round((save.best || 0) * 0.85 / 50) * 50) };
@@ -636,8 +645,8 @@ function P2() {
   o.stars = bt === 'meteo';
   // fin de partie : plus on a investi (compétences + batte), moins l'air freine à très grande vitesse
   const invest = (L('precision') + L('ailes') + L('glisse') + L('ressorts')) / 40 * 0.7 + (BAT[bt] || BATS[0]).pow / 0.6 * 0.3;
-  o.aero = 1 + 0.06 * c + AERO_K * invest * invest;
-  o.speedMul *= 1 + 0.06 * c; o.fishMul *= 1 + 0.1 * c;
+  o.aero = 1 + AERO_K * invest * invest;
+  o.speedMul *= 1 + 0.08 * crystalF(c); o.fishMul *= 1 + 0.05 * c;
   return o;
 }
 let prm = P2();
@@ -749,9 +758,9 @@ function renderDaily() {
 function renderPrestige() {
   const g = crystalGain(), c = save.pr.crystals;
   $('prestPane').innerHTML = `<h3>Nouvelle ère glaciaire</h3>
-    <p>Recommence à zéro (poissons, compétences, battes, quêtes et tenues) en échange de cristaux de glace. Chaque cristal donne pour toujours +6 % de vitesse de frappe, +10 % de poissons et un pingouin plus aérodynamique. Avec toutes les compétences et la meilleure batte, la Lune est à portée ; les cristaux rendent chaque nouvelle ère plus rapide. Les quêtes, les pouvoirs et les tenues sont à regagner. Tu gardes tes cristaux et ton record.</p>
-    <div class="stat"><div><span>Cristaux</span><b>${c}</b></div><div><span>Bonus actuel</span><b>+${Math.round(c * 6)} % / +${c * 10} %</b></div><div><span>Meilleur de l’ère</span><b>${fmt(save.pr.runBest)} m</b></div><div><span>Ères passées</span><b>${save.pr.count}</b></div></div>
-    <p>${g ? `Un prestige maintenant rapporterait <b class="big2">${g}</b> ${g > 1 ? 'cristaux' : 'cristal'}.` : 'Atteins 400 m dans cette ère pour gagner tes premiers cristaux.'}</p>
+    <p>Recommence à zéro (poissons, compétences, battes, quêtes et tenues) en échange de cristaux de glace. Tu gagnes un cristal par tranche de 1 000 m atteinte dans l’ère. Chaque cristal donne pour toujours +5 % de poissons et un petit bonus de frappe (jusqu’à +8 % au total). Avec toutes les compétences et la meilleure batte, la Lune est à portée ; les cristaux rendent chaque nouvelle ère plus rapide. Les quêtes, les pouvoirs et les tenues sont à regagner. Tu gardes tes cristaux et ton record.</p>
+    <div class="stat"><div><span>Cristaux</span><b>${c}</b></div><div><span>Bonus actuel</span><b>frappe +${Math.round(crystalF(c) * 8)} % · poissons +${c * 5} %</b></div><div><span>Meilleur de l’ère</span><b>${fmt(save.pr.runBest)} m</b></div><div><span>Ères passées</span><b>${save.pr.count}</b></div></div>
+    <p>${g ? `Un prestige maintenant rapporterait <b class="big2">${g}</b> ${g > 1 ? 'cristaux' : 'cristal'}.` : 'Atteins 500 m dans cette ère pour gagner ton premier cristal.'}</p>
     <button class="act" id="prestBtn" type="button" ${g ? '' : 'disabled'}>Déclencher l’ère glaciaire</button>`;
   const b = $('prestBtn');
   b.addEventListener('click', () => {
@@ -781,7 +790,7 @@ $('tree').addEventListener('pointerdown', e => { if (e.target === $('tree')) clo
 $('wipe').addEventListener('click', () => {
   const w = $('wipe');
   if (!w.classList.contains('armed')) { w.classList.add('armed'); w.textContent = 'Sûr ? Tout effacer'; return; }
-  save = { v: 3, fish: 0, lv: {}, bats: ['branche'], bat: 'branche', best: 0, throws: 0, q: { gulls: 0, perfRico: 0, maxRico: 0, maxCombo: 0, done: {} }, pr: { crystals: 0, count: 0, runBest: 0 }, peng: 'echarpe', outfits: ['echarpe'], tuto: 0 }; ensureDaily(); persist(); prm = P2(); renderQuests(); applyPenguin(); setGhost(); dailyMode = false;
+  save = { v: 4, fish: 0, lv: {}, bats: ['branche'], bat: 'branche', best: 0, throws: 0, q: { gulls: 0, perfRico: 0, maxRico: 0, maxCombo: 0, done: {} }, pr: { crystals: 0, count: 0, runBest: 0 }, peng: 'echarpe', outfits: ['echarpe'], tuto: 0 }; ensureDaily(); persist(); prm = P2(); renderQuests(); applyPenguin(); setGhost(); dailyMode = false;
   w.classList.remove('armed'); w.textContent = 'Tout recommencer';
   $('last').textContent = '—'; applyVisuals(); reset(); showPane('skills'); updateHud();
 });
