@@ -387,6 +387,71 @@
     .rc { padding: 12px 16px 12px; } .rc .big { font-size: 40px; margin: 4px 0 0; } .rc .sub { margin-bottom: 8px; } .recap ul { max-height: 26vh; }
   }
   @media (max-width: 560px) { #zoneTag { top: calc(env(safe-area-inset-top, 0px) + 228px); } #combo { top: calc(env(safe-area-inset-top, 0px) + 276px); } }
+  /* ---------- Classement en ligne et pseudo ---------- */
+  #lb, #nick { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; background: rgba(19, 40, 61, .88);
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) calc(env(safe-area-inset-right, 0px) + 12px) calc(env(safe-area-inset-bottom, 0px) + 12px) calc(env(safe-area-inset-left, 0px) + 12px); }
+  #nick { z-index: 11; }
+  .lbsheet { width: min(460px, 100%); }
+  .lbsheet .close { min-height: 44px; }
+  #lb .tabs button { flex: 1; min-height: 44px; font-size: 13px; }
+  .lbsub { margin: 0; padding: 0 18px 8px; font-size: 12px; color: #9DB5C9; flex-shrink: 0; }
+  .lbbody { flex: 1; min-height: 96px; overflow: auto; padding: 0 12px 8px; }
+  .lblist { list-style: none; margin: 0; padding: 0; }
+  .lblist li { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 7px 10px 7px 6px; border-radius: 10px; font-size: 15px; break-inside: avoid; }
+  .lblist li:nth-child(odd) { background: rgba(255, 255, 255, .05); }
+  .lblist .rg { font-family: "DM Mono", ui-monospace, monospace; font-size: 13px; color: #9DB5C9; text-align: right; font-variant-numeric: tabular-nums; }
+  .lblist li.top .rg { color: var(--gold); }
+  .lblist .ps { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lblist .ds { font-family: "DM Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .lblist li.me, .lblist li.me:nth-child(odd) { background: var(--gold); color: var(--night); }
+  .lblist li.me .rg { color: var(--night); }
+  .lblist li.gap { display: block; padding: 0; background: none; text-align: center; color: #9DB5C9; letter-spacing: .3em; line-height: 1.1; }
+  .lbnote { margin: 0; padding: 28px 12px; text-align: center; color: #C7D9E8; font-size: 14px; line-height: 1.45; }
+  .lbnote .btn { display: block; margin: 12px auto 0; min-height: 44px; }
+  .lbme { margin: 0 12px 10px; padding: 10px 12px; border-radius: 12px; background: #1B3550; color: var(--gold); font-weight: 800; font-size: 14px; text-align: center; flex-shrink: 0; }
+  .lbfoot { flex-direction: column; align-items: stretch; gap: 8px; }
+  .lbfoot .lbacts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .lbfoot .btn { flex: 1 1 150px; min-height: 44px; background: transparent; color: #C7D9E8; border: 1px solid #2A4763; backdrop-filter: none; white-space: normal; font-size: 12px; }
+  .lbfoot .btn.armed { background: var(--sunset); color: var(--night); border-color: var(--sunset); }
+  #nick form { margin: 0; background: var(--snow); border: 3px solid var(--deep); border-radius: 24px; box-shadow: 0 6px 0 var(--deep), 0 30px 80px rgba(0, 0, 0, .5);
+    padding: 20px 20px 16px; width: min(380px, 100%); box-sizing: border-box; text-align: center; }
+  #nick .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: var(--gold); color: var(--deep); }
+  #nick h2 { margin: 10px 0 4px; font-family: "Bagel Fat One", "Arial Black", sans-serif; font-weight: 400; font-size: 32px; line-height: 1.05; color: var(--deep); }
+  #nick p { margin: 0 0 12px; color: #4C6782; font-size: 14px; line-height: 1.4; text-wrap: balance; }
+  #nickIn { width: 100%; box-sizing: border-box; border: 3px solid var(--deep); border-radius: 12px; padding: 10px 12px; background: #fff; color: var(--deep);
+    font: 800 18px "Figtree", system-ui, sans-serif; text-align: center; -webkit-user-select: text; user-select: text; }
+  #nickIn:focus-visible { outline: 3px solid var(--sunset); outline-offset: 2px; }
+  #nick #nickMsg { min-height: 1.4em; margin: 8px 0 10px; font-size: 13px; font-weight: 700; color: #B03A1C; }
+  #nick .row { display: flex; gap: 8px; }
+  #nick button { flex: 1; min-height: 44px; border: 0; border-radius: 12px; padding: 12px; font: 800 15px "Figtree", system-ui, sans-serif; cursor: pointer; }
+  #nick button:focus-visible { outline: 3px solid var(--sunset); outline-offset: 2px; }
+  #nickLater { background: #E3ECF4; color: var(--deep); } #nickOk { background: var(--gold); color: var(--night); } #nickOk:disabled { opacity: .55; cursor: default; }
+  #nick .priv { margin: 12px 0 0; font-size: 12px; }
+  .rc .row { flex-wrap: wrap; }
+  .rc button#toLb { flex: 1 1 100%; min-height: 44px; background: #E3ECF4; color: var(--deep); }
+  #welcome .wlb { min-height: 44px; padding: 0 20px; border: 2px solid rgba(247, 250, 252, .85); border-radius: 999px; background: rgba(19, 40, 61, .72); color: var(--snow);
+    font: 800 14px "Figtree", system-ui, sans-serif; cursor: pointer; animation: fadeUp .6s 1.5s both; }
+  #welcome .wlb:focus-visible { outline: 3px solid var(--sunset); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { #welcome .wlb { animation: none !important; } }
+  /* clavier tactile : la carte du pseudo reste en haut de l'écran, au-dessus du clavier */
+  @media (pointer: coarse) { #nick { align-items: flex-start; padding-top: calc(env(safe-area-inset-top, 0px) + 7vh); } }
+  @media (max-height: 500px) and (orientation: landscape) {
+    .lbsheet { width: min(700px, 100%); }
+    /* titre, onglets et « Fermer » sur une seule ligne, pour laisser la hauteur à la liste */
+    .lbsheet { display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto minmax(0, 1fr) auto auto; align-items: center; }
+    .lbsheet header { display: contents; } .lbsheet h2 { font-size: 20px; grid-area: 1 / 1; padding: 8px 4px 8px 14px; } .lbsheet .close { grid-area: 1 / 3; margin: 8px 14px 8px 0; }
+    #lb .tabs { grid-area: 1 / 2; padding: 8px 10px; overflow: visible; }
+    .lbbody, .lbme, .lbfoot { grid-column: 1 / -1; } .lbbody { align-self: stretch; min-height: 0; } .lbme { margin-top: 4px; }
+    .lbsub { display: none; }
+    .lblist { columns: 2; column-gap: 12px; } .lblist li { padding: 5px 10px 5px 6px; font-size: 14px; }
+    .lbme { margin-bottom: 6px; padding: 6px 12px; font-size: 13px; }
+    .lbfoot { flex-direction: row; align-items: center; padding: 6px 14px 8px; } .lbfoot > span { flex: 1; } .lbfoot .lbacts { flex: 2; flex-wrap: nowrap; }
+    #nick { align-items: flex-start; padding-top: calc(env(safe-area-inset-top, 0px) + 8px); }
+    #nick form { padding: 10px 16px 10px; width: min(460px, 100%); } #nick h2 { font-size: 22px; margin: 4px 0 2px; } #nick p { margin-bottom: 6px; font-size: 13px; }
+    #nick .tag, #nick .priv { display: none; } #nick #nickMsg { margin: 4px 0 6px; }
+    /* résultat : le bouton du classement tient sur la ligne des autres boutons, la carte ne grandit pas */
+    #result { width: min(540px, calc(100% - 32px)); } .rc .row { flex-wrap: nowrap; } .rc button#toLb { flex: 1 1 auto; white-space: nowrap; } #toLb .wk { display: none; }
+  }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="fish" viewBox="0 0 32 18"><path d="M2 9c5-7 14-8 20-3l7-5v16l-7-5C16 17 7 16 2 9zm6-1.5a1.5 1.5 0 1 0 0 .01z"/></symbol></svg>
@@ -402,6 +467,7 @@
   <div class="low">
     <button class="go" id="wGo" type="button">Jouer</button>
     <div class="wrec" id="wRec" hidden>Record : <b id="wRecV"></b></div>
+    <button class="wlb" id="wLb" type="button" hidden>Classement</button>
     <p class="wsnd">Monte le son 🔊</p>
   </div>
 </div>
@@ -445,6 +511,7 @@
       <button id="again" type="button">Rejouer</button>
       <button id="replay" type="button">Revoir</button>
       <button id="toTree" type="button">Compétences</button>
+      <button id="toLb" type="button" hidden>Classement</button>
     </div>
   </div>
 </div>
@@ -454,6 +521,8 @@
 <div id="gearWrap">
   <div id="gearMenu" hidden role="menu" aria-label="Paramètres">
     <button id="treeBtn" class="btn" type="button" role="menuitem">Compétences <kbd>C</kbd></button>
+    <button id="lbBtn" class="btn" type="button" role="menuitem" hidden>Classement</button>
+    <button id="nickBtn" class="btn" type="button" role="menuitem" hidden>Pseudo : à choisir</button>
     <button id="quality" class="btn" type="button" role="menuitem">Qualité : haute</button>
     <button id="fpsBtn" class="btn" type="button" role="menuitem">Images : 60 / s</button>
     <button id="sound" class="btn" type="button" role="menuitem">Son : tout</button>
@@ -498,6 +567,40 @@
       <button class="btn" id="wipe" type="button">Tout recommencer</button>
     </div>
   </div>
+</div>
+
+<div id="lb" hidden>
+  <div class="sheet lbsheet" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+    <header>
+      <h2 id="lbTitle">Classement</h2>
+      <button class="btn close" id="lbClose" type="button">Fermer</button>
+    </header>
+    <nav class="tabs" role="tablist" aria-label="Période">
+      <button type="button" role="tab" class="on" data-per="semaine" aria-selected="true">Cette semaine</button>
+      <button type="button" role="tab" data-per="general" aria-selected="false">Général</button>
+    </nav>
+    <p class="lbsub" id="lbSub"></p>
+    <div class="lbbody" id="lbBody" aria-live="polite"></div>
+    <div class="lbme" id="lbMe" hidden></div>
+    <div class="foot lbfoot">
+      <span>Confidentialité : pseudo et score uniquement.</span>
+      <div class="lbacts">
+        <button class="btn" id="lbNick" type="button">Choisir un pseudo</button>
+        <button class="btn" id="lbDel" type="button" hidden>Supprimer mon pseudo et mes scores</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="nick" hidden>
+  <form id="nickForm" role="dialog" aria-modal="true" aria-labelledby="nickTitle" novalidate>
+    <span class="tag">Classement</span>
+    <h2 id="nickTitle">Ton pseudo</h2>
+    <p id="nickText"></p>
+    <input id="nickIn" type="text" maxlength="16" autocomplete="nickname" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Pseudo, 3 à 16 caractères" aria-describedby="nickMsg">
+    <p id="nickMsg" role="status"></p>
+    <div class="row"><button type="button" id="nickLater">Plus tard</button><button type="submit" id="nickOk">Valider</button></div>
+    <p class="priv">Pseudo et score uniquement : pas d’e-mail, rien d’autre.</p>
+  </form>
 </div>
 
 <script type="importmap">
@@ -654,6 +757,204 @@ const unlocked = () => true;
 const fmt = v => v.toFixed(1).replace('.', ',');
 const fishSvg = '<svg class="fishico"><use href="#fish"/></svg>';
 
+// =====================================================================
+//  Classement en ligne : pseudo, compte anonyme, envoi des scores
+// =====================================================================
+// Les deux valeurs se trouvent dans le tableau de bord Supabase (Project Settings › API Keys). La clé « publishable » est faite pour être
+// publique : ce sont les règles de supabase/schema.sql qui protègent les données. Tant que ces deux lignes sont vides, le classement
+// est masqué et le jeu ne contacte aucun serveur.
+const SUPA_URL = '';
+const SUPA_KEY = '';
+const SUPA_LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm';
+const LB_ON = !!(SUPA_URL && SUPA_KEY);
+const WEEK_MS = 7 * 864e5;
+// état local : pseudo, records déjà connus du serveur ou en attente (général et semaine), fin de la semaine en cours, scores à envoyer
+const LB0 = () => ({ pseudo: '', asked: false, gen: 0, wk: 0, wkEnd: 0, pend: [] });
+let lb = LB0();
+try { Object.assign(lb, JSON.parse(localStorage.getItem('banquise-lb') || '{}')); } catch (e) {}
+if (!Array.isArray(lb.pend)) lb.pend = [];
+const lbPersist = () => { try { localStorage.setItem('banquise-lb', JSON.stringify(lb)); } catch (e) {} };
+const ordinal = n => n === 1 ? '1er' : n + 'e';
+let supaP = null, lbBusy = false, lbRank = null, lbPer = 'semaine', lbReq = 0;
+// la bibliothèque n'est chargée qu'au premier besoin (pseudo, envoi d'un score, ouverture du classement), jamais au démarrage
+function supa() {
+  if (!supaP) supaP = import(SUPA_LIB).then(m => m.createClient(SUPA_URL, SUPA_KEY, { auth: { storageKey: 'banquise-auth', detectSessionInUrl: false } }))
+    .catch(e => { supaP = null; throw e; });
+  return supaP;
+}
+async function lbRpc(fn, args) { const c = await supa(), { data, error } = await c.rpc(fn, args); if (error) throw error; return data; }
+// compte anonyme : créé au moment où le joueur valide son pseudo, puis retrouvé dans le stockage du navigateur
+async function lbSession(create) {
+  const c = await supa(), { data, error } = await c.auth.getSession();
+  if (error) throw error;
+  if (data.session || !create) return data.session;
+  const r = await c.auth.signInAnonymously(); if (r.error) throw r.error;
+  return r.data.session;
+}
+// la semaine repart de zéro le lundi à 0 h, heure de Paris : c'est le serveur qui donne l'échéance
+function lbWeek() { if (lb.wkEnd && Date.now() >= lb.wkEnd) { lb.wk = 0; lb.wkEnd += Math.ceil((Date.now() - lb.wkEnd + 1) / WEEK_MS) * WEEK_MS; } }
+function lbSync(r) {
+  const pm = Math.max(0, ...lb.pend.map(q => q.d));
+  lb.wkEnd = Date.now() + r.reste_s * 1000; lb.gen = Math.max(r.general || 0, pm); lb.wk = Math.max(r.hebdo || 0, pm);
+  lbRank = { sem: r.rang_hebdo, gen: r.rang_general };
+}
+// fin d'un lancer : on ne garde que ce qui bat le record de la semaine ou le record général du joueur
+function lbThrow(d) {
+  if (!LB_ON) return;
+  d = Math.round(d * 10) / 10; lbWeek();
+  if (d >= 0.1 && (d > lb.gen || d > lb.wk)) {
+    lb.gen = Math.max(lb.gen, d); lb.wk = Math.max(lb.wk, d);
+    lb.pend = lb.pend.filter(q => q.d > d).slice(-4); lb.pend.push({ d, t: Date.now() });
+    lbPersist();
+  }
+  lbFlush();
+}
+// envoi des scores en attente. En cas d'échec réseau, ils restent sur l'appareil et repartent au lancer suivant, sans message.
+async function lbFlush() {
+  if (!LB_ON || lbBusy || !lb.pseudo || !lb.pend.length || navigator.onLine === false) return;
+  lbBusy = true;
+  try {
+    if (!await lbSession(false)) { lb.pseudo = ''; lb.asked = false; return; }   // compte perdu (stockage vidé) : on redemandera le pseudo
+    while (lb.pend.length) {
+      const q = lb.pend[0]; let r = null;
+      try { r = await lbRpc('envoyer_score', { p_distance: q.d, p_age_s: Math.max(0, Math.round((Date.now() - q.t) / 1000)) }); }
+      catch (e) {
+        if (e && e.code === 'P0002') { lb.pseudo = ''; break; }                    // le serveur ne connaît plus ce joueur
+        if (!(e && e.code === '22023')) throw e;                                   // distance refusée : on l'abandonne ; sinon on réessaiera
+      }
+      lb.pend.shift(); if (r) lbSync(r); lbPersist();
+    }
+  } catch (e) {} finally { lbBusy = false; lbPersist(); lbUi(); }
+}
+function lbUi() {
+  for (const id of ['wLb', 'toLb', 'lbBtn', 'nickBtn']) $(id).hidden = !LB_ON;
+  if (!LB_ON) return;
+  $('nickBtn').textContent = 'Pseudo : ' + (lb.pseudo || 'à choisir');
+  $('lbNick').textContent = lb.pseudo ? 'Changer de pseudo' : 'Choisir un pseudo';
+  $('lbDel').hidden = !lb.pseudo;
+  $('toLb').innerHTML = 'Classement' + (lb.pseudo && lbRank && lbRank.sem > 0 ? ` · ${ordinal(Math.round(lbRank.sem))}<span class="wk"> cette semaine</span>` : '');
+}
+const lbCanOpen = () => welcomeOn || phase === 'ready' || phase === 'done';
+
+// ---------- panneau du pseudo ----------
+function openNick(d) {
+  if (!LB_ON || !lbCanOpen()) return;
+  gearOpen(false);
+  $('nickTitle').textContent = lb.pseudo ? 'Changer de pseudo' : 'Ton pseudo';
+  $('nickText').textContent = lb.pseudo ? 'Ton nouveau pseudo remplace l’ancien dans le classement. Tes scores restent.'
+    : d ? `Choisis un pseudo pour inscrire tes ${fmt(d)} m au classement.` : 'Choisis un pseudo pour apparaître au classement.';
+  $('nickIn').value = lb.pseudo; $('nickMsg').textContent = ''; $('nickOk').disabled = false;
+  $('nick').hidden = false; needFrame = true;
+  if (!COARSE) { $('nickIn').focus(); $('nickIn').select(); }
+}
+function closeNick() {
+  $('nick').hidden = true;
+  if (!lb.pseudo && !lb.asked) { lb.asked = true; lbPersist(); }   // « Plus tard » : on ne redemande pas à chaque lancer
+  if (!$('lb').hidden) $('lbNick').focus();
+}
+$('nickLater').addEventListener('click', closeNick);
+$('nick').addEventListener('pointerdown', e => { e.stopPropagation(); if (e.target === $('nick')) closeNick(); });
+$('nickForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = $('nickIn').value.replace(/\s+/g, ' ').trim(), n = [...v].length, msg = t => { $('nickMsg').textContent = t; };
+  if (n < 3 || n > 16) { msg('Entre 3 et 16 caractères.'); return; }
+  if (v === lb.pseudo) { closeNick(); return; }
+  if ($('nickOk').disabled) return;
+  $('nickOk').disabled = true; msg('Un instant…');
+  try {
+    await lbSession(true);
+    const r = await lbRpc('definir_pseudo', { p_pseudo: v });
+    if (!r.ok) { msg(r.raison === 'pris' ? `« ${v} » est déjà pris. Essaie une variante.` : 'Entre 3 et 16 caractères, sans < ni >.'); return; }
+    const first = !lb.pseudo;
+    lb.pseudo = r.pseudo; lb.asked = true; lbPersist(); lbUi(); closeNick();
+    toast('Classement', first ? `Bienvenue, ${r.pseudo} !` : `Tu t’appelles maintenant ${r.pseudo}.`);
+    await lbFlush(); if (!$('lb').hidden) lbLoad();
+  } catch (err) { msg('Connexion impossible. Réessaie dans un instant.'); }
+  finally { $('nickOk').disabled = false; }
+});
+
+// ---------- panneau du classement ----------
+function lbNote(text, btn) {
+  const pn = document.createElement('p'); pn.className = 'lbnote'; pn.textContent = text;
+  if (btn) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = btn[0]; b.addEventListener('click', btn[1]); pn.appendChild(b); }
+  return pn;
+}
+function lbDisarm() { $('lbDel').classList.remove('armed'); $('lbDel').textContent = 'Supprimer mon pseudo et mes scores'; }
+function openLb() {
+  if (!LB_ON || !lbCanOpen()) return;
+  gearOpen(false); lbDisarm(); lbUi();
+  $('lb').hidden = false; needFrame = true; $('lbClose').focus(); lbLoad();
+}
+function closeLb() { $('lb').hidden = true; lbReq++; lbDisarm(); }
+async function lbLoad() {
+  const req = ++lbReq;
+  for (const b of document.querySelectorAll('#lb .tabs button')) { const on = b.dataset.per === lbPer; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }
+  $('lbSub').textContent = lbPer === 'semaine' ? 'Meilleur lancer de la semaine. Tout repart de zéro lundi à 0 h (heure de Paris).' : 'Meilleur lancer de chaque joueur, depuis le début.';
+  $('lbBody').replaceChildren(lbNote('Chargement…')); $('lbMe').hidden = true;
+  try {
+    await lbFlush();                                   // un score en attente part d'abord, pour apparaître dans la liste
+    const data = await lbRpc('classement', { p_periode: lbPer });
+    if (req === lbReq) lbRender(data);
+  } catch (e) { if (req === lbReq) $('lbBody').replaceChildren(lbNote('Classement indisponible pour le moment.', ['Réessayer', lbLoad])); }
+}
+function lbRender(data) {
+  const rows = data.lignes || [], ol = document.createElement('ol'); ol.className = 'lblist';
+  let prev = 0;
+  for (const r of rows) {
+    if (r.rang > prev + 1) { const g = document.createElement('li'); g.className = 'gap'; g.textContent = '···'; g.setAttribute('aria-hidden', 'true'); ol.appendChild(g); }
+    prev = r.rang;
+    const li = document.createElement('li'); li.className = (r.moi ? 'me' : '') + (r.rang <= 3 ? ' top' : '');
+    if (r.moi) li.setAttribute('aria-current', 'true');
+    for (const [cls, txt] of [['rg', r.rang], ['ps', r.pseudo], ['ds', fmt(+r.distance) + ' m']]) { const sp = document.createElement('span'); sp.className = cls; sp.textContent = txt; li.appendChild(sp); }
+    ol.appendChild(li);
+  }
+  $('lbBody').replaceChildren(rows.length ? ol : lbNote(lbPer === 'semaine' ? 'Personne n’a encore lancé cette semaine. À toi d’ouvrir le bal !' : 'Le classement est vide. À toi d’ouvrir le bal !'));
+  const me = rows.find(r => r.moi), up = me && rows.find(r => r.rang === me.rang - 1), down = me && rows.find(r => r.rang === me.rang + 1);
+  const tot = data.total > 1 ? ` sur ${data.total}` : '';
+  $('lbMe').textContent = me ? (up ? `${ordinal(me.rang)}${tot}, ${up.distance - me.distance < 0.05 ? 'à égalité avec le suivant' : `à ${fmt(up.distance - me.distance)} m du suivant`}` : down ? `1er${tot}, ${fmt(me.distance - down.distance)} m d’avance` : '1er, et seul en piste pour l’instant')
+    : !lb.pseudo ? 'Choisis un pseudo pour apparaître ici.' : lbPer === 'semaine' ? 'Pas encore de lancer classé cette semaine.' : 'Pas encore de lancer classé.';
+  $('lbMe').hidden = false;
+  if (me) (ol.querySelector('.me') || ol).scrollIntoView({ block: 'nearest' });
+}
+$('lb').addEventListener('pointerdown', e => { e.stopPropagation(); if (e.target === $('lb')) closeLb(); });
+$('lbClose').addEventListener('click', closeLb);
+for (const b of document.querySelectorAll('#lb .tabs button')) b.addEventListener('click', () => { if (lbPer !== b.dataset.per) { lbPer = b.dataset.per; lbDisarm(); lbLoad(); } });
+$('lbNick').addEventListener('click', () => { lbDisarm(); openNick(); });
+$('lbDel').addEventListener('click', async () => {
+  const b = $('lbDel');
+  if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'Sûr ? Tout supprimer'; return; }
+  b.disabled = true; b.textContent = 'Suppression…';
+  try {
+    if (await lbSession(false)) { await lbRpc('supprimer_mon_compte'); await (await supa()).auth.signOut({ scope: 'local' }); }
+    lb = LB0(); lb.asked = true; lbRank = null; lbPersist(); lbUi(); lbDisarm();
+    toast('Classement', 'Ton pseudo et tes scores sont supprimés.'); lbLoad();
+  } catch (e) { b.classList.remove('armed'); b.textContent = 'Suppression impossible. Réessayer'; }
+  finally { b.disabled = false; }
+});
+$('wLb').addEventListener('pointerdown', e => e.stopPropagation());
+$('wLb').addEventListener('click', e => { e.stopPropagation(); openLb(); });
+$('toLb').addEventListener('click', e => { e.stopPropagation(); openLb(); });
+$('lbBtn').addEventListener('click', e => { e.stopPropagation(); openLb(); });
+$('nickBtn').addEventListener('click', e => { e.stopPropagation(); openNick(); });
+// clavier : tant qu'un panneau est ouvert, le jeu n'entend rien (on peut taper un espace ou un « c » dans le pseudo)
+function lbKey(e) {
+  const n = !$('nick').hidden, l = !$('lb').hidden;
+  if (!n && !l) return false;
+  if (e.code === 'Escape') { if (n) closeNick(); else closeLb(); }
+  return true;
+}
+// écran de résultat : au premier score, on propose une fois de choisir un pseudo
+function lbResult(r) {
+  if (!LB_ON || !r || r.missed || r._lbAsked || lb.pseudo || lb.asked || !(r.d >= 0.1)) return;
+  r._lbAsked = true;
+  setTimeout(() => { if (phase === 'done' && $('result').classList.contains('on') && $('tree').hidden && $('victory').hidden && $('lb').hidden) openNick(r.d); }, 900);
+}
+lbUi();
+if (LB_ON) {
+  addEventListener('online', () => lbFlush());
+  if (lb.pseudo && lb.pend.length) setTimeout(lbFlush, 5000);   // score resté en attente lors d'une visite précédente
+}
+
 const P = () => {
   const Pr = L('precision'), A = L('ailes'), G = L('glisse'), R = L('ressorts');
   return {
@@ -725,10 +1026,10 @@ function renderTree() {
   }));
 }
 let curPane = 'skills';
-document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showPane(b.dataset.pane)));
+document.querySelectorAll('#tree .tabs button').forEach(b => b.addEventListener('click', () => showPane(b.dataset.pane)));
 function showPane(k) {
   curPane = k;
-  document.querySelectorAll('.tabs button').forEach(b => { b.classList.toggle('on', b.dataset.pane === k); b.setAttribute('aria-selected', b.dataset.pane === k); });
+  document.querySelectorAll('#tree .tabs button').forEach(b => { b.classList.toggle('on', b.dataset.pane === k); b.setAttribute('aria-selected', b.dataset.pane === k); });
   for (const id of ['skills', 'bats', 'pengs', 'daily', 'prestige']) $('pane-' + id).hidden = id !== k;
 
   if (k === 'skills') renderTree(); if (k === 'bats') renderBats(); if (k === 'pengs') renderPengs(); if (k === 'daily') renderDaily(); if (k === 'prestige') renderPrestige();
@@ -3324,6 +3625,7 @@ function showResult(r) {
   $('recap').innerHTML = r.missed ? '' : recapHTML(r);
   $('recap').hidden = !!r.missed; let ro = innerWidth > 700; try { const v = localStorage.getItem('banquise-recap'); if (v) ro = v === '1'; } catch (e) {} $('recap').open = ro;
   $('result').classList.add('on'); $('dist').classList.add('dim'); $('hint').classList.add('dim');
+  lbUi(); lbResult(r);
 }
 const FLY_PL = { gull: 'mouettes', owl: 'chouettes', koi: 'carpes koï', pigeon: 'pigeons', scarab: 'scarabées', balloon: 'ballons', parrot: 'perroquets', lantern: 'lanternes célestes', kite: 'cerfs-volants', asteroid: 'astéroïdes' };
 function recapHTML(r) {
@@ -3492,6 +3794,7 @@ function startGame() {
 $('welcome').addEventListener('pointerdown', e => e.stopPropagation());
 $('welcome').addEventListener('click', e => { e.stopPropagation(); startGame(); });
 addEventListener('keydown', e => {
+  if (lbKey(e)) return;
   if (welcomeOn) { if (['Space', 'Enter', 'NumpadEnter'].includes(e.code)) { e.preventDefault(); startGame(); } return; }
   if (e.code === 'Escape' && !$('gearMenu').hidden) { gearOpen(false); return; }
   if (e.code === 'Escape' && !$('tree').hidden) { closeTree(); return; }
@@ -3598,6 +3901,7 @@ function finish(missed) {
   const fishParts = { baseFish, zoneFish, mulFish, bonusFish: Math.floor(mulFish * bonus), primeFish, daily: dailyWin, victory: victory && save.won === 1 ? 25000 : 0 };
   lastResult = { d, gain, record, missed, bonus, gulls: gullsThrow, rico: ricoCount, zone: biomeAt(p.x).name, worldN: worldIdx(p.x) + 1, dailyWin, plouf, victory, st: ST, fishParts };
   $('combo').hidden = true;
+  lbThrow(d);   // un lancer raté (0 m) n'est pas classé, mais il relance l'envoi des scores en attente
   if (victory) setTimeout(showVictory, 1400);
   else setTimeout(() => { if (phase === 'done' && $('tree').hidden) showResult(lastResult); }, missed ? 350 : 650);
   setHint(TAP + ' pour rejouer');
@@ -4238,8 +4542,8 @@ function loop(nowMs) {
   if (cap) { const iv = 1000 / cap; if (nowMs - lastDraw < iv - 3) return; lastDraw = nowMs - lastDraw > iv * 2 ? nowMs : lastDraw + iv; }
   // l'horodatage d'image peut précéder performance.now() relevé pendant un long démarrage : jamais de pas négatif
   const raw = Math.max(0, (nowMs - last) / 1000), dt = Math.min(0.1, raw); last = nowMs; lastFrameT = nowMs;
-  // atelier ou écran de victoire ouverts : le décor est derrière, on fige le rendu (sauf une image à la demande)
-  const paused = !el.tree.hidden || !el.victory.hidden;
+  // atelier, classement, pseudo ou écran de victoire ouverts : le décor est derrière, on fige le rendu (sauf une image à la demande)
+  const paused = !el.tree.hidden || !el.victory.hidden || !el.lb.hidden || !el.nick.hidden;
   if (paused && !needFrame) return;
   needFrame = false;
   const now = nowMs / 1000;
